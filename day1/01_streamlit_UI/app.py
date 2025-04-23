@@ -2,38 +2,115 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import time
+from PIL import Image
+import matplotlib.pyplot as plt
 
 # ============================================
 # ページ設定
 # ============================================
-# st.set_page_config(
-#     page_title="Streamlit デモ",
-#     layout="wide",
-#     initial_sidebar_state="expanded"
-# )
+st.set_page_config(
+    page_title="ミニ数学テスト",
+    page_icon=Image.open('favicon.ico'),
+    layout="wide",
+    # initial_sidebar_state="collapsed",
+)
 
 # ============================================
 # タイトルと説明
 # ============================================
-st.title("Streamlit 初心者向けデモ")
-st.markdown("### コメントを解除しながらStreamlitの機能を学びましょう")
-st.markdown("このデモコードでは、コメントアウトされた部分を順番に解除しながらUIの変化を確認できます。")
+st.title("数学テスト")
+st.header("簡単な数学の問題に3問チャレンジしよう")
 
 # ============================================
 # サイドバー 
 # ============================================
-st.sidebar.header("デモのガイド")
-st.sidebar.info("コードのコメントを解除して、Streamlitのさまざまな機能を確認しましょう。")
+# st.sidebar.header("デモのガイド")
+# st.sidebar.info("コードのコメントを解除して、Streamlitのさまざまな機能を確認しましょう。")
 
 # ============================================
 # 基本的なUI要素
 # ============================================
-st.header("基本的なUI要素")
+# st.header("基本的なUI要素")
+
+# 問1
+st.markdown('## 問1 \n 以下の表から**国語**の平均点を求めよ。')
+
+score_df  = pd.DataFrame({
+    '国語': [12, 40, 22, 23, 43],
+    '英語': [25, 30, 82, 34, 43],
+    '数学': [15, 90, 82, 42, 53],
+})
+
+st.dataframe(score_df, use_container_width=True, hide_index=True)
+
+def validate_num(answer):
+  try:
+    float(answer)
+    return True
+  except:
+    return False
+
+answer1 = st.text_input('回答欄')
+err_box1 = st.empty()  
+
+if answer1:
+  if validate_num(answer1):
+    err_box1.empty()
+  else:
+    err_box1.error('⚠️  数字だけを入力してください"')
+    answer1 = ''
+
+# 問2
+st.markdown('## 問2 \n 以下の分布として最も近いものを選択肢から選べ。')
+
+from scipy.stats import norm
+
+fig, ax = plt.subplots()
+x = np.linspace(-5, 5, 100)
+y = norm.pdf(x, 0, 1)
+ax.plot(x, y)
+st.pyplot(fig)
+
+answer2 = st.radio('選択肢', ['標準正規分布', '一様分布', 'カイニ乗分布'])
+
+# 問3
+st.markdown('## 問3 \n 足して19にしなさい。')
+from scipy.stats import norm
+
+# チェックボックス
+select = [False] * 7
+select[1] = st.checkbox("1")
+select[2] = st.checkbox("2")
+select[3] = st.checkbox("3")
+select[4] = st.checkbox("4")
+select[5] = st.checkbox("5")
+select[6] = st.checkbox("6")
+
+answer3 = select if sum(select) != 0 else ''
+
+# 回答
+st.subheader("回答の送信")
+if st.button("送信する"):
+  if not all([answer1, answer2, answer3]):
+    st.error('全ての問題に回答してください')
+  else:
+    point = 0
+    if float(answer1) == 28.0:
+      point += 1
+    if answer2 == '標準正規分布':
+      point += 1
+    if answer3[1:] == [True, False, True, True, True, True] :
+      point += 1
+
+    if point == 3:
+      st.success('全問正解です！おめでとう！')
+    else:
+      st.error(f'残念。{3-point}問不正解です。見直そう！')
 
 # テキスト入力
-st.subheader("テキスト入力")
-name = st.text_input("あなたの名前", "ゲスト")
-st.write(f"こんにちは、{name}さん！")
+# st.subheader("テキスト入力")
+# name = st.text_input("あなたの名前", "ゲスト")
+# st.write(f"こんにちは、{name}さん！")
 
 # ボタン
 # st.subheader("ボタン")
@@ -57,6 +134,7 @@ st.write(f"こんにちは、{name}さん！")
 #     ["Python", "JavaScript", "Java", "C++", "Go", "Rust"]
 # )
 # st.write(f"あなたは{option}を選びました")
+
 
 # ============================================
 # レイアウト
@@ -183,21 +261,21 @@ st.write(f"こんにちは、{name}さん！")
 # ============================================
 # デモの使用方法
 # ============================================
-st.divider()
-st.subheader("このデモの使い方")
-st.markdown("""
-1. コードエディタでコメントアウトされた部分を見つけます（#で始まる行）
-2. 確認したい機能のコメントを解除します（先頭の#を削除）
-3. 変更を保存して、ブラウザで結果を確認します
-4. 様々な組み合わせを試して、UIがどのように変化するか確認しましょう
-""")
+# st.divider()
+# st.subheader("このデモの使い方")
+# st.markdown("""
+# 1. コードエディタでコメントアウトされた部分を見つけます（#で始まる行）
+# 2. 確認したい機能のコメントを解除します（先頭の#を削除）
+# 3. 変更を保存して、ブラウザで結果を確認します
+# 4. 様々な組み合わせを試して、UIがどのように変化するか確認しましょう
+# """)
 
-st.code("""
-# コメントアウトされた例:
+# st.code("""
+# # コメントアウトされた例:
+# # if st.button("クリックしてください"):
+# #     st.success("ボタンがクリックされました！")
+
+# # コメントを解除した例:
 # if st.button("クリックしてください"):
 #     st.success("ボタンがクリックされました！")
-
-# コメントを解除した例:
-if st.button("クリックしてください"):
-    st.success("ボタンがクリックされました！")
-""")
+# """)
