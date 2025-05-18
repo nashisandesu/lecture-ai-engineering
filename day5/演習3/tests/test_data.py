@@ -117,10 +117,10 @@ def test_value_ranges(sample_data):
             column="Age", min_value=0, max_value=100
         ),
         gx.expectations.ExpectColumnValuesToBeBetween(
-            column="SibSp", min_value=5, max_value=10
+            column="SibSp", min_value=0, max_value=10
         ),
         gx.expectations.ExpectColumnValuesToBeBetween(
-            column="Parch", min_value=5, max_value=10
+            column="Parch", min_value=0, max_value=10
         ),
         gx.expectations.ExpectColumnValuesToBeBetween(
             column="Fare", min_value=0, max_value=600
